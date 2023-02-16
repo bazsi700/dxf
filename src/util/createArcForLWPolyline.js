@@ -82,5 +82,6 @@ export default (from, to, bulge, resolution) => {
   if (bulge < 0) {
     points.reverse()
   }
+  console.log("Centre:",d, " Radius:",r)
   return points.map((p) => [p.x, p.y])
 }
