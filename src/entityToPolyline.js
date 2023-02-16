@@ -111,17 +111,17 @@ export const interpolateBSpline = (
  */
 export default (entity, options) => {
   options = options || {}
-  let polyline
+  let polylineOrArcs
 
   if (entity.type === 'LINE') {
-    polyline = [
+    polylineOrArcs = [
       [entity.start.x, entity.start.y],
       [entity.end.x, entity.end.y],
     ]
   }
 
   if (entity.type === 'LWPOLYLINE' || entity.type === 'POLYLINE') {
-    polyline = []
+    polylineOrArcs = []
     if (entity.polygonMesh || entity.polyfaceMesh) {
       // Do not attempt to render meshes
     } else if (entity.vertices.length) {
@@ -131,15 +131,15 @@ export default (entity, options) => {
       for (let i = 0, il = entity.vertices.length; i < il - 1; ++i) {
         const from = [entity.vertices[i].x, entity.vertices[i].y]
         const to = [entity.vertices[i + 1].x, entity.vertices[i + 1].y]
-        polyline.push(from)
+        polylineOrArcs.push(from)
         if (entity.vertices[i].bulge) {
-          polyline = polyline.concat(
+          polylineOrArcs = polylineOrArcs.concat(
             createArcForLWPolyine(from, to, entity.vertices[i].bulge),
           )
         }
         // The last iteration of the for loop
         if (i === il - 2) {
-          polyline.push(to)
+          polylineOrArcs.push(to)
         }
       }
     } else {
@@ -148,19 +148,14 @@ export default (entity, options) => {
   }
 
   if (entity.type === 'CIRCLE') {
-    polyline = interpolateEllipse(
-      entity.x,
-      entity.y,
-      entity.r,
-      entity.r,
-      0,
-      Math.PI * 2,
-    )
-    if (entity.extrusionZ === -1) {
-      polyline = polyline.map(function (p) {
-        return [-p[0], p[1]]
-      })
-    }
+    polylineOrArcs = [
+      {
+        centre: [entity.x, entity.y],
+        radius: entity.r,
+        startAngle: 0,
+        endAngle: 2 * Math.PI,
+      },
+    ]
   }
 
   if (entity.type === 'ELLIPSE') {
@@ -169,7 +164,7 @@ export default (entity, options) => {
     )
     const ry = entity.axisRatio * rx
     const majorAxisRotation = -Math.atan2(-entity.majorY, entity.majorX)
-    polyline = interpolateEllipse(
+    polylineOrArcs = interpolateEllipse(
       entity.x,
       entity.y,
       rx,
@@ -179,37 +174,25 @@ export default (entity, options) => {
       majorAxisRotation,
     )
     if (entity.extrusionZ === -1) {
-      polyline = polyline.map(function (p) {
+      polylineOrArcs = polylineOrArcs.map(function (p) {
         return [-p[0], p[1]]
       })
     }
   }
 
   if (entity.type === 'ARC') {
-    // Why on earth DXF has degree start & end angles for arc,
-    // and radian start & end angles for ellipses is a mystery
-    polyline = interpolateEllipse(
-      entity.x,
-      entity.y,
-      entity.r,
-      entity.r,
-      entity.startAngle,
-      entity.endAngle,
-      undefined,
-      false,
-    )
-
-    // I kid you not, ARCs and ELLIPSEs handle this differently,
-    // as evidenced by how AutoCAD actually renders these entities
-    if (entity.extrusionZ === -1) {
-      polyline = polyline.map(function (p) {
-        return [-p[0], p[1]]
-      })
-    }
+    polylineOrArcs = [
+      {
+        centre: [entity.x, entity.y],
+        radius: entity.r,
+        startAngle: entity.startAngle,
+        endAngle: entity.endAngle,
+      },
+    ]
   }
 
   if (entity.type === 'SPLINE') {
-    polyline = interpolateBSpline(
+    polylineOrArcs = interpolateBSpline(
       entity.controlPoints,
       entity.degree,
       entity.knots,
@@ -218,9 +201,9 @@ export default (entity, options) => {
     )
   }
 
-  if (!polyline) {
+  if (!polylineOrArcs) {
     logger.warn('unsupported entity for converting to polyline:', entity.type)
     return []
   }
-  return polyline
+  return polylineOrArcs
 }
