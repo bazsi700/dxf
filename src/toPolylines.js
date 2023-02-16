@@ -33,7 +33,7 @@ export default (parsed) => {
   const bbox = new Box2()
   polylines.forEach((polyline) => {
     polyline.vertices.forEach((vertex) => {
-      if (vertex.centre == undefined) {
+      if (vertex.centre === undefined) {
         bbox.expandByPoint({ x: vertex[0], y: vertex[1] })
       } else {
         bbox.expandByPoint({

@@ -9,7 +9,7 @@ export default (polyline, transforms) => {
   transforms.forEach((transform) => {
     polyline = polyline.map(function (p) {
       // Use a copy to avoid side effects
-      let transformPoint = (p2) => {
+      const transformPoint = (p2) => {
         if (transform.scaleX) {
           p2[0] = p2[0] * transform.scaleX
         }
@@ -36,11 +36,11 @@ export default (polyline, transforms) => {
         }
         return p2
       }
-      if (p.centre == undefined) {
-        let p2 = [p[0], p[1]]
+      if (p.centre === undefined) {
+        const p2 = [p[0], p[1]]
         return transformPoint[p2]
       } else {
-        let centre = transformPoint(p.centre)
+        const centre = transformPoint(p.centre)
         let radius = p.radius
         let startAngle = p.startAngle
         let endAngle = p.endAngle
