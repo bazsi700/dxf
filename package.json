@@ -14,7 +14,7 @@
     "dist": "browserify lib/index.js --standalone dxf -o dist/dxf.js",
     "lint": "eslint src test",
     "prepublishOnly": "npm run lint && npm run test && rimraf dist/ lib/ && npm run compile && npm run dist",
-    "prepare": "npm run lint && npm run test && rimraf dist/ lib/ && npm run compile && npm run dist",
+    "prepare": "npm run lint && rimraf dist/ lib/ && npm run compile && npm run dist",
     "prettier": "prettier --write .",
     "test": "npm run test:unit",
     "test:functional": "cd test/functional && webpack-dev-server",
