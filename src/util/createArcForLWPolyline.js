@@ -63,24 +63,5 @@ export default (from, to, bulge, resolution) => {
   }
   const r = b.sub(d).length()
 
-  const startInter =
-    Math.floor(startAngle / resolution) * resolution + resolution
-  const endInter = Math.ceil(endAngle / resolution) * resolution - resolution
-
-  const points = []
-  for (let i = startInter; i <= endInter; i += resolution) {
-    points.push(
-      d.add(
-        new V2(
-          Math.cos((i / 180) * Math.PI) * r,
-          Math.sin((i / 180) * Math.PI) * r,
-        ),
-      ),
-    )
-  }
-  // Maintain the right ordering to join the from and to points
-  if (bulge < 0) {
-    points.reverse()
-  }
-  return [{ centre: d, radius: r, startAngle, endAngle }]
+  return [{ centre: [d.x, d.y], radius: r, startAngle, endAngle }]
 }
