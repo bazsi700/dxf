@@ -44,14 +44,22 @@ export default (polyline, transforms) => {
         let radius = p.radius
         let startAngle = p.startAngle
         let endAngle = p.endAngle
-        if (transform.scaleX) {
-          if (
-            !transform.scaleY ||
-            Math.abs(transform.scaleX - transform.scaleY) > 0.000001
-          ) {
-            console.log('ERROR: Tried scaling a circle arc into an ellipse arc')
-          }
-          radius = radius * transform.scaleX
+        if (!transform.scaleX) {
+          transform.scaleX = 1
+        }
+        if (!transform.scaleY) {
+          transform.scaleY = 1
+        }
+        if (
+          Math.abs(Math.abs(transform.scaleX) - Math.abs(transform.scaleY)) >
+          0.000001
+        ) {
+          console.log(
+            'ERROR: Tried scaling a circle arc into an ellipse arc',
+            polyline,
+            transforms,
+            transform,
+          )
         }
         if (transform.rotation) {
           const angle = (transform.rotation / 180) * Math.PI
