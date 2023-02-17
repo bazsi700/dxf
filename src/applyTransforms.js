@@ -63,14 +63,14 @@ export default (polyline, transforms) => {
         }
         radius = radius * Math.abs(transform.scaleX)
         if (transform.scaleX < 0) {
-          let newStart = Math.PI * 2 - endAngle + Math.PI
-          let newEnd = Math.PI * 2 - startAngle + Math.PI
+          const newStart = Math.PI * 2 - endAngle + Math.PI
+          const newEnd = Math.PI * 2 - startAngle + Math.PI
           startAngle = newStart
           endAngle = newEnd
         }
         if (transform.scaleY < 0) {
-          let newStart = Math.PI * 2 - endAngle
-          let newEnd = Math.PI * 2 - startAngle
+          const newStart = Math.PI * 2 - endAngle
+          const newEnd = Math.PI * 2 - startAngle
           startAngle = newStart
           endAngle = newEnd
         }
