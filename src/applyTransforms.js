@@ -38,7 +38,7 @@ export default (polyline, transforms) => {
       }
       if (p.centre === undefined) {
         const p2 = [p[0], p[1]]
-        return transformPoint[p2]
+        return transformPoint(p2)
       } else {
         const centre = transformPoint(p.centre)
         let radius = p.radius
