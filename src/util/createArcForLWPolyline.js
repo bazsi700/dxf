@@ -56,10 +56,10 @@ export default (from, to, bulge, resolution) => {
 
   // Add points between start start and eng angle relative
   // to the center point
-  const startAngle = (Math.atan2(b.y - d.y, b.x - d.x) / Math.PI) * 180
-  let endAngle = (Math.atan2(a.y - d.y, a.x - d.x) / Math.PI) * 180
+  const startAngle = Math.atan2(b.y - d.y, b.x - d.x)
+  let endAngle = Math.atan2(a.y - d.y, a.x - d.x)
   if (endAngle < startAngle) {
-    endAngle += 360
+    endAngle += Math.PI * 2
   }
   const r = b.sub(d).length()
 
