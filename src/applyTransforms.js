@@ -61,6 +61,7 @@ export default (polyline, transforms) => {
             transform,
           )
         }
+        radius = radius * transform.scaleX
         if (transform.rotation) {
           const angle = (transform.rotation / 180) * Math.PI
           startAngle = startAngle + angle
