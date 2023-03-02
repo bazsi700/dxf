@@ -51,8 +51,8 @@ export default (polyline, transforms) => {
           transform.scaleY = 1
         }
         if (
-          Math.abs(Math.abs(transform.scaleX) - Math.abs(transform.scaleY)) >
-          0.000001
+          Math.abs(Math.abs(transform.scaleX) / Math.abs(transform.scaleY)) >
+          0.00001
         ) {
           console.log(
             'ERROR: Tried scaling a circle arc into an ellipse arc',
