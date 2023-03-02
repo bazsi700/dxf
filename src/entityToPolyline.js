@@ -167,7 +167,7 @@ export default (entity, options) => {
       polylineOrArcs = [
         {
           centre: [entity.x, entity.y],
-          radius: entity.rx,
+          radius: rx,
           startAngle: entity.startAngle,
           endAngle: entity.endAngle,
         },
