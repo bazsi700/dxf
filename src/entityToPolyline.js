@@ -164,14 +164,28 @@ export default (entity, options) => {
     )
     const ry = entity.axisRatio * rx
     if (1 - 0.00001 < entity.axisRatio && entity.axisRatio < 1 + 0.00001) {
-      polylineOrArcs = [
-        {
-          centre: [entity.x, entity.y],
-          radius: rx,
-          startAngle: entity.startAngle,
-          endAngle: entity.endAngle,
-        },
-      ]
+      const majorAxisRotation = -Math.atan2(-entity.majorY, entity.majorX)
+      if (entity.extrusionZ === -1) {
+        const newStart = Math.PI * 2 - entity.endAngle + majorAxisRotation
+        const newEnd = Math.PI * 2 - entity.startAngle + majorAxisRotation
+        polylineOrArcs = [
+          {
+            centre: [entity.x, entity.y],
+            radius: rx,
+            startAngle: newStart,
+            endAngle: newEnd,
+          },
+        ]
+      } else {
+        polylineOrArcs = [
+          {
+            centre: [entity.x, entity.y],
+            radius: rx,
+            startAngle: entity.startAngle,
+            endAngle: entity.endAngle,
+          },
+        ]
+      }
     } else {
       const majorAxisRotation = -Math.atan2(-entity.majorY, entity.majorX)
       polylineOrArcs = interpolateEllipse(
