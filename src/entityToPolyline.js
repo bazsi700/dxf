@@ -181,8 +181,8 @@ export default (entity, options) => {
           {
             centre: [entity.x, entity.y],
             radius: rx,
-            startAngle: entity.startAngle,
-            endAngle: entity.endAngle,
+            startAngle: entity.startAngle + majorAxisRotation,
+            endAngle: entity.endAngle + majorAxisRotation,
           },
         ]
       }
