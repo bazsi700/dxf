@@ -197,11 +197,6 @@ export default (entity, options) => {
         entity.endAngle,
         majorAxisRotation,
       )
-      if (entity.extrusionZ === -1) {
-        polylineOrArcs = polylineOrArcs.map(function (p) {
-          return [-p[0], p[1]]
-        })
-      }
     }
   }
 
