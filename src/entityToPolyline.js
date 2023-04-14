@@ -164,7 +164,7 @@ export default (entity, options) => {
 
   if (entity.type === 'CIRCLE') {
     if (hasEllipseTransform(entity)) {
-      polyline = interpolateEllipse(
+      polylineOrArcs = interpolateEllipse(
         entity.x,
         entity.y,
         entity.r,
@@ -173,7 +173,7 @@ export default (entity, options) => {
         Math.PI * 2,
       )
       if (entity.extrusionZ === -1) {
-        polyline = polyline.map(function (p) {
+        polylineOrArcs = polylineOrArcs.map(function (p) {
           return [-p[0], p[1]]
         })
       }
@@ -235,7 +235,7 @@ export default (entity, options) => {
     if (hasEllipseTransform(entity)) {
       // Why on earth DXF has degree start & end angles for arc,
       // and radian start & end angles for ellipses is a mystery
-      polyline = interpolateEllipse(
+      polylineOrArcs = interpolateEllipse(
         entity.x,
         entity.y,
         entity.r,
@@ -249,7 +249,7 @@ export default (entity, options) => {
       // I kid you not, ARCs and ELLIPSEs handle this differently,
       // as evidenced by how AutoCAD actually renders these entities
       if (entity.extrusionZ === -1) {
-        polyline = polyline.map(function (p) {
+        polylineOrArcs = polylineOrArcs.map(function (p) {
           return [-p[0], p[1]]
         })
       }
