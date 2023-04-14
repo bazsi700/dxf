@@ -17,7 +17,7 @@ export default (parsed) => {
     }
     return true
   })
-  const polylines = entities.map((entity) => {
+  const polylines = filtered.map((entity) => {
     const layerTable = parsed.tables.layers[entity.layer]
     let rgb
     if (layerTable) {
