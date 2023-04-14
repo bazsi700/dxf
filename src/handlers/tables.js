@@ -17,10 +17,14 @@ const ltypeHandler = (tuples) => {
           break
         case 70:
           // Standard flag values (bit-coded values):
+          // 1 = Layer is frozen; otherwise layer is thawed
+          // 2 = Layer is frozen by default in new viewports
           //  16 = If set, table entry is externally dependent on an xref
           //  32 = If both this bit and bit 16 are set, the externally dependent xref has been successfully resolved
           //  64 = If set, the table entry was referenced by at least one entity in the drawing the last time the drawing was edited. (This flag is for the benefit of AutoCAD commands. It can be ignored by most programs that read DXF files and need not be set by programs that write DXF files)
           layer.flag = value
+          layer.frozen = (value & 1) === 1
+          layer.frozenByDefault = (value & 2) === 2
           break
         case 72:
           // Alignment code (value is always 65, the ASCII code for A):
@@ -94,6 +98,8 @@ const layerHandler = (tuples) => {
           break
         case 70:
           layer.flags = value
+          layer.frozen = (value & 1) === 1
+          layer.frozenByDefault = (value & 2) === 2
           break
         case 290:
           layer.plot = parseInt(value) !== 0

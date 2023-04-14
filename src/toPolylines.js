@@ -8,6 +8,15 @@ import logger from './util/logger'
 
 export default (parsed) => {
   const entities = denormalise(parsed)
+  const filtered = entities.filter((entity) => {
+    const layerTable = parsed.tables.layers[entity.layer]
+    if (layerTable) {
+      if (layerTable.frozen || layerTable.frozenByDefault) {
+        return false
+      }
+    }
+    return true
+  })
   const polylines = entities.map((entity) => {
     const layerTable = parsed.tables.layers[entity.layer]
     let rgb
