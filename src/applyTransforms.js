@@ -52,8 +52,8 @@ export default (polyline, transforms) => {
         }
         if (
           Math.abs(Math.abs(transform.scaleX) / Math.abs(transform.scaleY)) <
-            1 - 0.0001 ||
-          1 + 0.0001 <
+            1 - 0.001 ||
+          1 + 0.001 <
             Math.abs(Math.abs(transform.scaleX) / Math.abs(transform.scaleY))
         ) {
           console.log(
