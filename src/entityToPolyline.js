@@ -104,6 +104,21 @@ export const interpolateBSpline = (
   return polyline
 }
 
+export const hasEllipseTransform = (entity) => {
+  let has = false
+  entity.transforms.forEach((transform) => {
+    if (
+      Math.abs(Math.abs(transform.scaleX) / Math.abs(transform.scaleY)) <
+        1 - 0.0001 ||
+      1 + 0.0001 <
+        Math.abs(Math.abs(transform.scaleX) / Math.abs(transform.scaleY))
+    ) {
+      has = true
+    }
+  })
+  return has
+}
+
 /**
  * Convert a parsed DXF entity to a polyline. These can be used to render the
  * the DXF in SVG, Canvas, WebGL etc., without depending on native support
@@ -148,14 +163,30 @@ export default (entity, options) => {
   }
 
   if (entity.type === 'CIRCLE') {
-    polylineOrArcs = [
-      {
-        centre: [entity.x, entity.y],
-        radius: entity.r,
-        startAngle: 0,
-        endAngle: 2 * Math.PI,
-      },
-    ]
+    if (hasEllipseTransform(entity)) {
+      polyline = interpolateEllipse(
+        entity.x,
+        entity.y,
+        entity.r,
+        entity.r,
+        0,
+        Math.PI * 2,
+      )
+      if (entity.extrusionZ === -1) {
+        polyline = polyline.map(function (p) {
+          return [-p[0], p[1]]
+        })
+      }
+    } else {
+      polylineOrArcs = [
+        {
+          centre: [entity.x, entity.y],
+          radius: entity.r,
+          startAngle: 0,
+          endAngle: 2 * Math.PI,
+        },
+      ]
+    }
   }
 
   if (entity.type === 'ELLIPSE') {
@@ -201,14 +232,37 @@ export default (entity, options) => {
   }
 
   if (entity.type === 'ARC') {
-    polylineOrArcs = [
-      {
-        centre: [entity.x, entity.y],
-        radius: entity.r,
-        startAngle: entity.startAngle,
-        endAngle: entity.endAngle,
-      },
-    ]
+    if (hasEllipseTransform(entity)) {
+      // Why on earth DXF has degree start & end angles for arc,
+      // and radian start & end angles for ellipses is a mystery
+      polyline = interpolateEllipse(
+        entity.x,
+        entity.y,
+        entity.r,
+        entity.r,
+        entity.startAngle,
+        entity.endAngle,
+        undefined,
+        false,
+      )
+
+      // I kid you not, ARCs and ELLIPSEs handle this differently,
+      // as evidenced by how AutoCAD actually renders these entities
+      if (entity.extrusionZ === -1) {
+        polyline = polyline.map(function (p) {
+          return [-p[0], p[1]]
+        })
+      }
+    } else {
+      polylineOrArcs = [
+        {
+          centre: [entity.x, entity.y],
+          radius: entity.r,
+          startAngle: entity.startAngle,
+          endAngle: entity.endAngle,
+        },
+      ]
+    }
   }
 
   if (entity.type === 'SPLINE') {
