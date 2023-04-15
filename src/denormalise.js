@@ -64,7 +64,7 @@ export default (parseResult) => {
             const transforms2 = transforms.slice(0)
             transforms2.push(t)
 
-            const filteredBlockEntities = block.entities.map((be) => {
+            const filteredBlockEntities = block.entities.filter((be) => {
               const layerTable = parseResult.tables.layers[be.layer]
               if (layerTable) {
                 // A negative colorNumber signals a turned off layer
