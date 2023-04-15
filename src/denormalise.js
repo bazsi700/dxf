@@ -19,6 +19,14 @@ export default (parseResult) => {
           return
         }
 
+        const layerTable = parseResult.tables.layers[e.layer]
+        if (layerTable) {
+          // A negative colorNumber signals a turned off layer
+          if (layerTable.frozen || layerTable.colorNumber < 0) {
+            return
+          }
+        }
+
         const rowCount = insert.rowCount ?? 1
         const columnCount = insert.columnCount ?? 1
         const rowSpacing = insert.rowSpacing ?? 0
@@ -56,9 +64,21 @@ export default (parseResult) => {
             const transforms2 = transforms.slice(0)
             transforms2.push(t)
 
+            const filteredBlockEntities = block.entities.map((be) => {
+              const layerTable = parseResult.tables.layers[be.layer]
+              if (layerTable) {
+                // A negative colorNumber signals a turned off layer
+                if (layerTable.frozen || layerTable.colorNumber < 0) {
+                  return false
+                }
+              }
+              return true
+            })
+
             // Use the insert layer
-            const blockEntities = block.entities.map((be) => {
+            const blockEntities = filteredBlockEntities.map((be) => {
               const be2 = cloneDeep(be)
+
               be2.layer = insert.layer
               // https://github.com/bjnortier/dxf/issues/52
               // See Issue 52. If we don't modify the

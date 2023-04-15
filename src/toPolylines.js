@@ -12,11 +12,7 @@ export default (parsed) => {
     const layerTable = parsed.tables.layers[entity.layer]
     if (layerTable) {
       // A negative colorNumber signals a turned off layer
-      if (
-        layerTable.frozen ||
-        layerTable.frozenByDefault ||
-        layerTable.colorNumber < 0
-      ) {
+      if (layerTable.frozen || layerTable.colorNumber < 0) {
         return false
       }
     }
